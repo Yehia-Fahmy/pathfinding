@@ -16,6 +16,21 @@ def createMaze():
     return maze
 
 
+def createMaze2():
+    maze = []
+    maze.append(["#", "#", "#", "#", "#", "#", "#", "O", "#"])
+    maze.append(["#", " ", " ", " ", " ", " ", "#", " ", "#"])
+    maze.append(["#", " ", "#", "#", " ", "#", "#", " ", "#"])
+    maze.append(["#", " ", "#", " ", " ", " ", "#", " ", "#"])
+    maze.append(["#", " ", "#", " ", "#", " ", "#", " ", "#"])
+    maze.append(["#", " ", "#", " ", "#", " ", "#", " ", "#"])
+    maze.append(["#", " ", "#", " ", "#", " ", "#", " ", "#"])
+    maze.append(["#", " ", " ", " ", "#", " ", " ", " ", "#"])
+    maze.append(["#", "X", "#", "#", "#", "#", "#", "#", "#"])
+
+    return maze
+
+
 def print_maze(maze):  # function to print the maze as it is
     for i in range(len(maze)):
         for j in range(len(maze[0])):
@@ -86,10 +101,7 @@ def findEnd(maze, moves):
             current_point[0] += 1
     # our current point is now determined we can check and see if we have found the target
     if maze[current_point[0]][current_point[1]] == "X":
-        print(
-            "Found a path from: ", start_point, " to: ", current_point
-        )  # if we have found a path we display it
-        print("The path is: ", moves)
+        print("The path is: ", moves)  # if we have found a path we display it
         return True
 
     return False  # if no path has been found then we return false
@@ -107,6 +119,8 @@ nums = queue.Queue()
 nums.put("")
 add = ""
 maze = createMaze()
+print("The maze looks like:")
+print_maze(maze)
 
 while not findEnd(maze, add):
     add = nums.get()
