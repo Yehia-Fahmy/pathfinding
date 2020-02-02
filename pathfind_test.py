@@ -75,8 +75,6 @@ def add_valid(
         # we now want to make sure that we add only valid entries to the path
         if current_pos[0] > 0:
             queue.append(path + "U")
-        
-            
 
 
 our_queue = ""
