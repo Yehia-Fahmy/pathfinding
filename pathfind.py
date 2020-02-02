@@ -1,39 +1,19 @@
 import queue
 
 
-def createSmallMaze():
-    maze = []
-    maze.append([" ", " ", "O"])
-    maze.append([" ", " ", " "])
-    maze.append(["X", " ", " "])
-
-    return maze
-
-
 def createMaze():
     maze = []
-    maze.append(["#", "#", "#", "#", "#", "O", "#"])
-    maze.append(["#", " ", " ", " ", "#", " ", "#"])
-    maze.append(["#", " ", "#", " ", "#", " ", "#"])
-    maze.append(["#", " ", "#", " ", " ", " ", "#"])
-    maze.append(["#", " ", "#", "#", "#", " ", "#"])
-    maze.append(["#", " ", " ", " ", "#", " ", "#"])
-    maze.append(["#", "#", "#", "X", "#", "#", "#"])
+    maze.append(["#", "#", "#", "#", "#", "O", "#", "#", "#"])
+    maze.append(["#", " ", " ", " ", " ", " ", " ", " ", "#"])
+    maze.append(["#", " ", "#", "#", " ", "#", "#", " ", "#"])
+    maze.append(["#", " ", "#", " ", " ", " ", "#", " ", "#"])
+    maze.append(["#", " ", "#", " ", "#", " ", "#", " ", "#"])
+    maze.append(["#", " ", "#", " ", "#", " ", "#", " ", "#"])
+    maze.append(["#", " ", "#", " ", "#", " ", "#", "#", "#"])
+    maze.append(["#", " ", " ", " ", " ", " ", " ", " ", "#"])
+    maze.append(["#", "X", "#", "#", "#", "#", "#", "#", "#"])
 
     return maze
-
-
-def queue_test():
-    queue1 = [" ", " "]
-    x = queue1.pop(0)
-    while len(x) < 5:
-        x = queue1.pop(0)
-        queue1.append(x + "R")
-        queue1.append(x + "L")
-        queue1.append(x + "D")
-        queue1.append(x + "U")
-    print(len(x))
-    print(queue1)
 
 
 def print_maze(maze):  # function to print the maze as it is
@@ -44,35 +24,95 @@ def print_maze(maze):  # function to print the maze as it is
         print()
 
 
-def find_starting_pos(maze):  # function to find the starting postion of the maze
+def valid(maze, moves):  # function to check if a given path is valid on a given maze
+    start_point = (0, 0)
     for i in range(len(maze)):
         for j in range(len(maze[0])):
             if maze[i][j] == "O":
-                return i, j  # returns the pos coordinates as col, row (y,x)
+                start_point = [
+                    i,
+                    j,
+                ]  # finds the starting point of the maze and stores it as (col, row)
+            else:
+                pass
+    # now we want to find the current pos after following the path proposed
+    current_point = start_point
+    for move in moves:
+        if move == "L":
+            current_point[1] -= 1
+        elif move == "R":
+            current_point[1] += 1
+        elif move == "U":
+            current_point[0] -= 1
+        elif move == "D":
+            current_point[0] += 1
+
+    if not (
+        0 <= current_point[0] <= len(maze) - 1
+        and 0 <= current_point[1] <= len(maze[0]) - 1
+    ):  # checks to see if the current point is in the maze
+        return False
+    elif (
+        maze[current_point[0]][current_point[1]] == "#"
+    ):  # checks to see if the current point is blocked by an obstical
+        return False
+
+    return True  # returning true means the path is valid
 
 
-def add_valid(
-    starting_pos, queue
-):  # this function will add any valid paths to the queue
-    current_pos = (
-        starting_pos
-    )  # using the starting position as a start we follow the path at the top of the queue to find the current position
-    path = queue.pop(0)
-    while len(path) > 0:
-        next_move = path.pop(0)
-        if next_move == "R":
-            current_pos[1] += 1
-        elif next_move == "L":
-            current_pos[1] -= 1
-        elif next_move == "U":
-            current_pos[0] -= 1
-        elif next_move == "D":
-            current_pos[0] += 1
+def findEnd(maze, moves):
+    start_point = (0, 0)
+    for i in range(len(maze)):
+        for j in range(len(maze[0])):
+            if maze[i][j] == "O":
+                start_point = [
+                    i,
+                    j,
+                ]  # finds the starting point of the maze and stores it as (col, row)
+            else:
+                pass
 
-        # we now want to make sure that we add only valid entries to the path
+    current_point = (
+        start_point
+    )  # now we have our current point we have to use similar logic as before to determine our current point
+    for move in moves:
+        if move == "L":
+            current_point[1] -= 1
+        elif move == "R":
+            current_point[1] += 1
+        elif move == "U":
+            current_point[0] -= 1
+        elif move == "D":
+            current_point[0] += 1
+    # our current point is now determined we can check and see if we have found the target
+    if maze[current_point[0]][current_point[1]] == "X":
+        print(
+            "Found a path from: ", start_point, " to: ", current_point
+        )  # if we have found a path we display it
+        print("The path is: ", moves)
+        return True
+
+    return False  # if no path has been found then we return false
 
 
-our_queue = ""
-our_maze = createSmallMaze()
-print_maze(our_maze)
-print(find_starting_pos(our_maze))
+"""
+Functions we need:
+- createMaze
+- findEnd
+- valid
+- printMaze
+"""
+
+nums = queue.Queue()
+nums.put("")
+add = ""
+maze = createMaze()
+
+while not findEnd(maze, add):
+    add = nums.get()
+    # print(add)
+    for j in ["L", "R", "U", "D"]:
+        put = add + j
+        if valid(maze, put):
+            nums.put(put)
+
